@@ -1,0 +1,94 @@
+# Build directories
+build/
+cmake-build-*/
+
+# CMake generated files
+CMakeCache.txt
+CMakeFiles/
+CMakeScripts/
+cmake_install.cmake
+Makefile
+*.cmake
+!CMakeLists.txt
+CTestTestfile.cmake
+_deps
+
+# Compiled binaries and executables
+*.exe
+*.out
+*.app
+*_tests
+exclusionmutuelle_tests
+exercice_5_synchro_tests
+sequentialite1_tests
+sequentialite2_tests
+mutexfromsemaphore_tests
+pcobarrier_tests
+bridge_condvar_tests
+bridge_monitor_tests
+bridge_semaphore_tests
+bridgesimple_tests
+
+# Object files
+*.o
+*.obj
+*.ko
+*.elf
+*.lo
+
+# Compiled Dynamic libraries
+*.so
+*.dylib
+*.dll
+
+# Compiled Static libraries
+*.a
+*.lib
+*.la
+
+# Qt Creator user files
+*.pro.user
+*.pro.user.*
+CMakeLists.txt.user*
+*.autosave
+
+# Dependency files
+*.d
+
+# Precompiled Headers
+*.gch
+*.pch
+
+# Debug files
+*.dSYM/
+*.su
+*.idb
+*.pdb
+
+# macOS specific
+.DS_Store
+.AppleDouble
+.LSOverride
+._*
+
+# IDE specific files
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# Temporary files
+*.tmp
+*.temp
+*.bak
+*.log
+pbcopy
+
+# Install directory
+install/
+Install/
+
+# Package files
+*.tar.gz
+*.zip

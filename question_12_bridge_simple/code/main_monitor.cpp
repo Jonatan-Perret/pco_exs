@@ -1,0 +1,177 @@
+/******************************************************************************
+Fichier: main_monitor.cpp
+Description: Tests pour l'implémentation avec moniteur de Hoare
+******************************************************************************/
+
+#include <gtest/gtest.h>
+#include <random>
+
+#include <pcosynchro/pcologger.h>
+#include <pcosynchro/pcothread.h>
+#include <pcosynchro/pcomutex.h>
+#include <pcosynchro/pcotest.h>
+
+#include "bridgemanagermonitor.h"
+
+
+class BridgeChecker
+{
+private:
+    int maxWeight;
+    int nbCars;
+    int nbTrucks;
+    std::recursive_mutex mutex;
+
+
+    void check()
+    {
+        ASSERT_LE(totalWeight(), maxWeight) << "Too many vehicles on the bridge";
+    }
+
+
+public:
+
+    BridgeChecker(int maxWeight) : maxWeight(maxWeight), nbCars(0), nbTrucks(0) {}
+
+    int totalWeight() {
+        int result;
+        mutex.lock();
+        result = nbCars + 10 * nbTrucks;
+        mutex.unlock();
+        return result;
+    }
+
+    void addCar()
+    {
+        mutex.lock();
+        nbCars ++;
+        check();
+        mutex.unlock();
+    }
+
+    void addTruck()
+    {
+        mutex.lock();
+        nbTrucks ++;
+        check();
+        mutex.unlock();
+    }
+
+    void removeCar()
+    {
+        mutex.lock();
+        nbCars --;
+        check();
+        mutex.unlock();
+    }
+
+    void removeTruck()
+    {
+        mutex.lock();
+        nbTrucks --;
+        check();
+        mutex.unlock();
+    }
+
+};
+
+
+
+
+void carTask(BridgeChecker *checker, BridgeManager *manager,int tid, int nbAccess)
+{
+    std::random_device rd;
+    std::mt19937 gen(rd());
+    std::uniform_int_distribution<> dis(1, 1000);
+
+    for (int i = 0; i < nbAccess; i++) {
+        manager->carAccess();
+        checker->addCar();
+        logger() << "Tache " << tid << ": Voiture sur le pont" << '\n';
+        logger() << "Poids: " << checker->totalWeight() << '\n';
+        PcoThread::usleep(static_cast<uint64_t>(6.0 * dis(gen)));
+        checker->removeCar();
+        manager->carLeave();
+        PcoThread::usleep(static_cast<uint64_t>(1.0 * dis(gen)));
+    }
+
+}
+
+void truckTask(BridgeChecker *checker, BridgeManager *manager,int tid, int nbAccess)
+{
+    std::random_device rd;
+    std::mt19937 gen(rd());
+    std::uniform_int_distribution<> dis(1, 1000);
+
+    for (int i = 0; i < nbAccess; i++) {
+        manager->truckAccess();
+        checker->addTruck();
+        logger() << "Tache " << tid << ": Camion sur le pont" << '\n';
+        logger() << "Poids: " << checker->totalWeight() << '\n';
+        PcoThread::usleep(static_cast<uint64_t>(6.0 * dis(gen)));
+        checker->removeTruck();
+        manager->truckLeave();
+        PcoThread::usleep(static_cast<uint64_t>(1.0 * dis(gen)));
+    }
+}
+
+
+void test(BridgeManager *manager,int maxWeight, int nbCars, int nbTrucks, int nbAccess)
+{
+    BridgeChecker checker(maxWeight);
+    std::vector<std::unique_ptr<PcoThread>> threadsVoiture(nbCars);
+    std::vector<std::unique_ptr<PcoThread>> threadsCamion(nbTrucks);
+
+    for(int t = 0; t < nbCars; t++){
+        logger() << "Création de la tâche voiture " << t << '\n';
+        threadsVoiture[t] = std::make_unique<PcoThread>(carTask, &checker, manager, t, nbAccess);
+    }
+    for(int t = 0; t < nbTrucks; t++){
+        logger() << "Création de la tâche camion " << t << '\n';
+        threadsCamion[t] = std::make_unique<PcoThread>(truckTask, &checker, manager, t, nbAccess);
+    }
+
+    for(int t = 0; t < nbCars; t++){
+        threadsVoiture[t]->join();
+    }
+    for(int t = 0; t < nbTrucks; t++){
+        threadsCamion[t]->join();
+    }
+    ASSERT_EQ(checker.totalWeight(), 0);
+}
+
+
+TEST(BridgeMonitor, standard) {
+    const int POIDS_MAX = 100;
+    const int NB_THREADS_VOITURE = 50;
+    const int NB_THREADS_CAMION = 10;
+    const int NB_ACCESS = 10;
+    ASSERT_DURATION_LE(5, {
+                           std::unique_ptr<BridgeManager> manager;
+                           int maxWeight = POIDS_MAX;
+                           manager = std::make_unique<BridgeManager>(maxWeight);
+                           test(manager.get(), maxWeight, NB_THREADS_VOITURE, NB_THREADS_CAMION, NB_ACCESS);
+                       });
+}
+
+
+
+TEST(BridgeMonitor, onlyTrucks) {
+    const int POIDS_MAX = 100;
+    const int NB_THREADS_VOITURE = 0;
+    const int NB_THREADS_CAMION = 100;
+    const int NB_ACCESS = 1;
+    ASSERT_DURATION_LE(15, {
+                           std::unique_ptr<BridgeManager> manager;
+                           int maxWeight = POIDS_MAX;
+                           manager = std::make_unique<BridgeManager>(maxWeight);
+                           test(manager.get(), maxWeight, NB_THREADS_VOITURE, NB_THREADS_CAMION, NB_ACCESS);
+                       });
+}
+
+
+int main(int argc, char **argv) {
+    testing::InitGoogleTest(&argc, argv);
+    logger().initialize(argc, argv);
+    return RUN_ALL_TESTS();
+}
