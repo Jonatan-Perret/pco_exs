@@ -25,23 +25,23 @@ question_XX_nom/
 ## Liste des Exercices
 
 1. **Exclusion mutuelle** - Problèmes de base d'exclusion mutuelle
-2. **Synchronisation** - Synchronisation de threads
-3. **Séquentialité (1)** - Exercices de séquentialité avec joins et sémaphores
-4. **Séquentialité (2)** - Suite des exercices de séquentialité
-5. **Séquentialité (3)** - Séquentialité avancée
-6. **Séquentialité (4)** - Derniers exercices de séquentialité
-7. **Mutex depuis sémaphore** - Implémentation d'un mutex à partir d'un sémaphore
-8. **Barrière** - Implémentation de barrières (sémaphores, moniteurs, variables de condition)
-9. **Pont simple** - Problème du pont à sens unique
-10. **Pont flottant** - Problème du pont avec capacité variable
-11. **Pont flottant avec arrêt** - Extension avec arrêt de véhicules
-12. **Producteur-consommateur simple** - Buffer à 2 consommateurs
-13. **Producteur-consommateur multiple** - Buffer multi-consommateurs
-14. **Sémaphore depuis moniteur** - Implémentation d'un sémaphore à partir d'un moniteur
-15. **Preloader** - Système de préchargement
-16. **Toilettes** - Problème de synchronisation des toilettes
-17. **Lecteur-rédacteur avec priorité** - Priorité aux rédacteurs
-18. **Lecteur-rédacteur classe A/B** - Classification des accès
+5. **Synchronisation** - Synchronisation de threads
+6. **Séquentialité (1)** - Exercices de séquentialité avec joins et sémaphores
+7. **Séquentialité (2)** - Suite des exercices de séquentialité
+8. **Séquentialité (3)** - Séquentialité avancée
+9. **Séquentialité (4)** - Derniers exercices de séquentialité
+10. **Mutex depuis sémaphore** - Implémentation d'un mutex à partir d'un sémaphore
+11. **Barrière** - Implémentation de barrières (sémaphores, moniteurs, variables de condition)
+12. **Pont simple** - Problème du pont à sens unique
+13. **Pont flottant** - Problème du pont avec capacité variable
+14. **Pont flottant avec arrêt** - Extension avec arrêt de véhicules
+15. **Producteur-consommateur simple** - Buffer à 2 consommateurs
+16. **Producteur-consommateur multiple** - Buffer multi-consommateurs
+17. **Sémaphore depuis moniteur** - Implémentation d'un sémaphore à partir d'un moniteur
+18. **Preloader** - Système de préchargement
+19. **Toilettes** - Problème de synchronisation des toilettes
+20. **Lecteur-rédacteur avec priorité** - Priorité aux rédacteurs
+21. **Lecteur-rédacteur classe A/B** - Classification des accès
 
 ## Compilation et Exécution
 
@@ -68,7 +68,7 @@ make
 
 ## Documentation
 
-Le fichier `pco-exercices.pdf` contient l'énoncé complet de tous les exercices avec les détails théoriques.
+Le fichier `pco-exercices.pdf` contient l'énoncé complet de tous les exercices.
 
 ## Outils de Développement
 
